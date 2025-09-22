@@ -1,0 +1,20 @@
+<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="badgeGrad" cx="50%" cy="30%">
+      <stop offset="0%" style="stop-color:#ef4444"/>
+      <stop offset="100%" style="stop-color:#dc2626"/>
+    </radialGradient>
+  </defs>
+  <circle cx="36" cy="36" r="36" fill="url(#badgeGrad)"/>
+  <circle cx="36" cy="36" r="28" fill="white" opacity="0.9"/>
+  
+  <!-- Satellite icon -->
+  <rect x="32" y="33" width="8" height="6" fill="#3b82f6" rx="1"/>
+  <rect x="28" y="34" width="4" height="4" fill="#1e40af" rx="0.5"/>
+  <rect x="40" y="34" width="4" height="4" fill="#1e40af" rx="0.5"/>
+  <line x1="36" y1="33" x2="36" y2="28" stroke="#64748b" stroke-width="1"/>
+  <circle cx="36" cy="28" r="2" fill="#ef4444"/>
+  
+  <!-- Notification count -->
+  <text x="36" y="50" text-anchor="middle" fill="#3b82f6" font-family="Arial" font-size="8" font-weight="bold">1</text>
+</svg>

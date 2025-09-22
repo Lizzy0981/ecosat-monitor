@@ -1,0 +1,247 @@
+<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Earth gradient -->
+    <radialGradient id="earthGradient" cx="35%" cy="35%">
+      <stop offset="0%" style="stop-color:#4ade80"/>
+      <stop offset="50%" style="stop-color:#22c55e"/>
+      <stop offset="100%" style="stop-color:#15803d"/>
+    </radialGradient>
+    
+    <!-- Ocean gradient -->
+    <radialGradient id="oceanGradient" cx="35%" cy="35%">
+      <stop offset="0%" style="stop-color:#0ea5e9"/>
+      <stop offset="70%" style="stop-color:#0284c7"/>
+      <stop offset="100%" style="stop-color:#0369a1"/>
+    </radialGradient>
+    
+    <!-- Satellite gradient -->
+    <linearGradient id="satelliteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+    
+    <!-- Glow filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Shadow filter -->
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="300" height="300" fill="#0f172a"/>
+  
+  <!-- Stars -->
+  <g fill="white" opacity="0.6">
+    <circle cx="30" cy="40" r="0.5"/>
+    <circle cx="80" cy="25" r="0.5"/>
+    <circle cx="120" cy="50" r="0.5"/>
+    <circle cx="200" cy="30" r="0.5"/>
+    <circle cx="250" cy="45" r="0.5"/>
+    <circle cx="270" cy="20" r="0.5"/>
+    <circle cx="50" cy="250" r="0.5"/>
+    <circle cx="220" cy="270" r="0.5"/>
+    <circle cx="260" cy="250" r="0.5"/>
+  </g>
+  
+  <!-- Earth -->
+  <g transform="translate(150,150)">
+    <!-- Earth base -->
+    <circle cx="0" cy="0" r="60" fill="url(#oceanGradient)" filter="url(#shadow)"/>
+    
+    <!-- Continents -->
+    <g fill="url(#earthGradient)">
+      <!-- North America -->
+      <path d="M-30,-20 Q-15,-30 5,-25 Q15,-35 20,-15 Q10,-5 -10,0 Q-25,-10 -30,-20 Z"/>
+      
+      <!-- Europe -->
+      <path d="M10,-25 Q20,-30 30,-20 Q25,-10 15,-15 Q10,-20 10,-25 Z"/>
+      
+      <!-- Africa -->
+      <path d="M15,-10 Q25,-15 35,5 Q30,30 20,35 Q15,15 15,-10 Z"/>
+      
+      <!-- Asia -->
+      <path d="M30,-30 Q50,-35 55,-15 Q50,0 35,-5 Q32,-20 30,-30 Z"/>
+      
+      <!-- South America -->
+      <path d="M-10,15 Q0,5 10,25 Q5,45 -5,40 Q-10,30 -10,15 Z"/>
+      
+      <!-- Australia -->
+      <path d="M35,15 Q50,10 55,25 Q50,35 40,30 Q35,25 35,15 Z"/>
+    </g>
+    
+    <!-- Atmosphere -->
+    <circle cx="0" cy="0" r="63" fill="none" stroke="#60a5fa" stroke-width="1" opacity="0.4" filter="url(#glow)"/>
+  </g>
+  
+  <!-- Orbital paths -->
+  <g fill="none" stroke-width="1" opacity="0.6">
+    <!-- Low Earth Orbit -->
+    <ellipse cx="150" cy="150" rx="85" ry="80" stroke="#3b82f6" stroke-dasharray="3,3">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="0 150 150;360 150 150" dur="8s" repeatCount="indefinite"/>
+    </ellipse>
+    
+    <!-- Medium Earth Orbit -->
+    <ellipse cx="150" cy="150" rx="110" ry="105" stroke="#22c55e" stroke-dasharray="4,4">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="0 150 150;-360 150 150" dur="12s" repeatCount="indefinite"/>
+    </ellipse>
+    
+    <!-- Geostationary Orbit -->
+    <ellipse cx="150" cy="150" rx="135" ry="130" stroke="#f59e0b" stroke-dasharray="5,5">
+      <animateTransform attributeName="transform" type="rotate" 
+                        values="0 150 150;360 150 150" dur="16s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+  
+  <!-- Satellites -->
+  <!-- LEO Satellite 1 -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" 
+                      values="0 150 150;360 150 150" dur="8s" repeatCount="indefinite"/>
+    <g transform="translate(235,150)" filter="url(#shadow)">
+      <!-- Satellite body -->
+      <rect x="-4" y="-3" width="8" height="6" fill="url(#satelliteGrad)" rx="1"/>
+      
+      <!-- Solar panels -->
+      <rect x="-7" y="-2" width="3" height="4" fill="#1e40af" rx="0.5"/>
+      <rect x="4" y="-2" width="3" height="4" fill="#1e40af" rx="0.5"/>
+      
+      <!-- Antenna -->
+      <line x1="0" y1="-3" x2="0" y2="-6" stroke="#64748b" stroke-width="0.5"/>
+      <circle cx="0" cy="-6" r="0.8" fill="#ef4444"/>
+      
+      <!-- Communication beam -->
+      <path d="M0,-6 L-3,-12 L3,-12 Z" fill="#3b82f6" opacity="0.3">
+        <animate attributeName="opacity" values="0.1;0.5;0.1" dur="2s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </g>
+  
+  <!-- MEO Satellite -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" 
+                      values="45 150 150;-315 150 150" dur="12s" repeatCount="indefinite"/>
+    <g transform="translate(260,150)" filter="url(#shadow)">
+      <!-- Satellite body -->
+      <rect x="-5" y="-4" width="10" height="8" fill="url(#satelliteGrad)" rx="1"/>
+      
+      <!-- Solar panels -->
+      <rect x="-9" y="-3" width="4" height="6" fill="#1e40af" rx="0.5"/>
+      <rect x="5" y="-3" width="4" height="6" fill="#1e40af" rx="0.5"/>
+      
+      <!-- GPS antenna -->
+      <rect x="-1" y="-6" width="2" height="2" fill="#22c55e" rx="0.5"/>
+      
+      <!-- Signal transmission -->
+      <circle cx="0" cy="0" r="8" fill="none" stroke="#22c55e" stroke-width="0.5" opacity="0.4">
+        <animate attributeName="r" values="8;15;8" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+  
+  <!-- GEO Satellite -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" 
+                      values="90 150 150;450 150 150" dur="16s" repeatCount="indefinite"/>
+    <g transform="translate(285,150)" filter="url(#shadow)">
+      <!-- Satellite body -->
+      <rect x="-6" y="-5" width="12" height="10" fill="url(#satelliteGrad)" rx="2"/>
+      
+      <!-- Large solar panels -->
+      <rect x="-12" y="-4" width="6" height="8" fill="#1e40af" rx="1"/>
+      <rect x="6" y="-4" width="6" height="8" fill="#1e40af" rx="1"/>
+      
+      <!-- Solar panel grid -->
+      <g stroke="#3b82f6" stroke-width="0.2" opacity="0.8">
+        <line x1="-11" y1="-2" x2="-7" y2="-2"/>
+        <line x1="-11" y1="0" x2="-7" y2="0"/>
+        <line x1="-11" y1="2" x2="-7" y2="2"/>
+        <line x1="7" y1="-2" x2="11" y2="-2"/>
+        <line x1="7" y1="0" x2="11" y2="0"/>
+        <line x1="7" y1="2" x2="11" y2="2"/>
+      </g>
+      
+      <!-- Communication dish -->
+      <ellipse cx="0" cy="-3" rx="4" ry="2" fill="#e2e8f0" stroke="#64748b" stroke-width="0.3"/>
+      <ellipse cx="0" cy="-3" rx="2" ry="1" fill="#94a3b8"/>
+      
+      <!-- Earth-pointing antenna -->
+      <circle cx="0" cy="3" r="1.5" fill="#f59e0b"/>
+      
+      <!-- Broadcast coverage -->
+      <path d="M0,5 Q-10,20 -20,35 Q0,30 20,35 Q10,20 0,5" fill="#f59e0b" opacity="0.2">
+        <animate attributeName="opacity" values="0.1;0.3;0.1" dur="4s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </g>
+  
+  <!-- Data transmission beams -->
+  <g stroke-width="1" opacity="0.5">
+    <!-- Earth to satellites -->
+    <line x1="150" y1="150" x2="235" y2="150" stroke="#3b82f6" stroke-dasharray="1,2">
+      <animate attributeName="stroke-dashoffset" values="0;6" dur="1s" repeatCount="indefinite"/>
+    </line>
+    
+    <line x1="150" y1="150" x2="260" y2="150" stroke="#22c55e" stroke-dasharray="1,2">
+      <animate attributeName="stroke-dashoffset" values="0;6" dur="1.2s" repeatCount="indefinite"/>
+    </line>
+    
+    <line x1="150" y1="150" x2="285" y2="150" stroke="#f59e0b" stroke-dasharray="1,2">
+      <animate attributeName="stroke-dashoffset" values="0;6" dur="1.5s" repeatCount="indefinite"/>
+    </line>
+  </g>
+  
+  <!-- Orbit labels -->
+  <g font-family="Arial" font-size="8" text-anchor="middle" fill="white" opacity="0.8">
+    <text x="235" y="20">LEO</text>
+    <text x="235" y="30" font-size="6">Low Earth Orbit</text>
+    
+    <text x="260" y="40">MEO</text>
+    <text x="260" y="50" font-size="6">Medium Earth Orbit</text>
+    
+    <text x="285" y="60">GEO</text>
+    <text x="285" y="70" font-size="6">Geostationary Orbit</text>
+  </g>
+  
+  <!-- Environmental monitoring data points -->
+  <g opacity="0.7">
+    <!-- CO2 monitoring -->
+    <circle cx="180" cy="120" r="2" fill="#ef4444">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="185" y="118" font-family="Arial" font-size="6" fill="#ef4444">CO₂</text>
+    
+    <!-- Temperature monitoring -->
+    <circle cx="120" cy="180" r="2" fill="#f59e0b">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite" begin="0.5s"/>
+    </circle>
+    <text x="125" y="178" font-family="Arial" font-size="6" fill="#f59e0b">TEMP</text>
+    
+    <!-- Vegetation monitoring -->
+    <circle cx="180" cy="180" r="2" fill="#22c55e">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite" begin="1s"/>
+    </circle>
+    <text x="185" y="178" font-family="Arial" font-size="6" fill="#22c55e">VEG</text>
+    
+    <!-- Air quality monitoring -->
+    <circle cx="120" cy="120" r="2" fill="#3b82f6">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" repeatCount="indefinite" begin="1.5s"/>
+    </circle>
+    <text x="125" y="118" font-family="Arial" font-size="6" fill="#3b82f6">AQI</text>
+  </g>
+  
+  <!-- Title -->
+  <text x="150" y="290" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">
+    Monitoreo Satelital Global
+  </text>
+</svg>

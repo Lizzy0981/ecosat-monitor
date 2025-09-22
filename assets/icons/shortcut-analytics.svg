@@ -1,0 +1,21 @@
+<svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="analyticsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" fill="url(#analyticsGrad)" rx="12"/>
+  
+  <!-- Pie chart -->
+  <circle cx="48" cy="48" r="24" fill="white" opacity="0.9"/>
+  
+  <!-- Pie slices -->
+  <path d="M48,24 A24,24 0 0,1 72,48 L48,48 Z" fill="#3b82f6"/>
+  <path d="M72,48 A24,24 0 0,1 58.6,69.9 L48,48 Z" fill="#22c55e"/>
+  <path d="M58.6,69.9 A24,24 0 0,1 37.4,69.9 L48,48 Z" fill="#ef4444"/>
+  <path d="M37.4,69.9 A24,24 0 0,1 48,24 L48,48 Z" fill="#f59e0b"/>
+  
+  <!-- Center dot -->
+  <circle cx="48" cy="48" r="4" fill="white"/>
+</svg>

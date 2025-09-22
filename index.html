@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EcoSat Monitor - Dashboard de sostenibilidad urbana con datos satelitales en tiempo real">
+    <meta name="keywords" content="sostenibilidad, medio ambiente, datos satelitales, NASA, calidad aire, ciencia datos">
+    <meta name="author" content="Elizabeth Díaz Familia">
+    <meta name="theme-color" content="#3B82F6">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="EcoSat Monitor - Urban Sustainability Dashboard">
+    <meta property="og:description" content="Monitoreo de sostenibilidad urbana con datos satelitales en tiempo real">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lizzy0981.github.io/ecosat-monitor">
+    <meta property="og:image" content="https://lizzy0981.github.io/ecosat-monitor/assets/images/og-image.svg">
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.png">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/icons/icon-512x512.png">
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="src/styles.css">
+    
+    <title>EcoSat Monitor - Dashboard de Sostenibilidad Urbana</title>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="earth-spinner">
+                <div class="earth"></div>
+                <div class="satellite"></div>
+            </div>
+            <h3 data-i18n="loading.title">Conectando con satélites...</h3>
+            <p data-i18n="loading.subtitle">Obteniendo datos ambientales en tiempo real</p>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <i class="fas fa-satellite"></i>
+                        <h1>EcoSat Monitor</h1>
+                    </div>
+                    <div class="live-indicator">
+                        <span class="pulse-dot"></span>
+                        <span data-i18n="header.live">LIVE</span>
+                    </div>
+                </div>
+
+                <nav class="nav-menu">
+                    <button class="nav-btn active" data-section="dashboard" data-i18n="nav.dashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </button>
+                    <button class="nav-btn" data-section="cities" data-i18n="nav.cities">
+                        <i class="fas fa-city"></i> Ciudades
+                    </button>
+                    <button class="nav-btn" data-section="analytics" data-i18n="nav.analytics">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </button>
+                    <button class="nav-btn" data-section="rankings" data-i18n="nav.rankings">
+                        <i class="fas fa-trophy"></i> Rankings
+                    </button>
+                    <button class="nav-btn" data-section="achievements" data-i18n="nav.achievements">
+                        <i class="fas fa-medal"></i> Logros
+                    </button>
+                </nav>
+
+                <div class="header-controls">
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-trophy"></i>
+                            <span id="user-points">2,450</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-fire"></i>
+                            <span id="user-streak">7</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-star"></i>
+                            <span id="user-level">8</span>
+                        </div>
+                    </div>
+
+                    <div class="control-buttons">
+                        <button class="control-btn" id="theme-toggle" title="Cambiar tema">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <button class="control-btn" id="language-toggle" title="Cambiar idioma">
+                            <span class="lang-text">ES</span>
+                        </button>
+                        <button class="control-btn" id="settings-btn" title="Configuración">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application -->
+    <main class="main-app">
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="app-section active">
+            <div class="container">
+                <!-- Global Metrics Bar -->
+                <div class="metrics-bar">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-label" data-i18n="metrics.air_quality">Calidad del Aire</span>
+                            <span class="metric-value" id="global-aqi">67</span>
+                            <span class="metric-status moderate" data-i18n="status.moderate">Moderado</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-label" data-i18n="metrics.temperature">Temperatura Global</span>
+                            <span class="metric-value" id="global-temp">+1.2°C</span>
+                            <span class="metric-status warning" data-i18n="status.above_average">Sobre promedio</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-label" data-i18n="metrics.green_index">Índice Verde</span>
+                            <span class="metric-value" id="green-index">73</span>
+                            <span class="metric-status good" data-i18n="status.good">Bueno</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-label" data-i18n="metrics.co2_levels">Niveles CO2</span>
+                            <span class="metric-value" id="co2-levels">418 ppm</span>
+                            <span class="metric-status critical" data-i18n="status.critical">Crítico</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Interactive World Map -->
+                    <div class="dashboard-card map-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.world_map">Mapa Global Interactivo</h3>
+                            <div class="card-controls">
+                                <select id="map-layer-select" class="control-select">
+                                    <option value="air-quality" data-i18n="map.air_quality">Calidad del Aire</option>
+                                    <option value="temperature" data-i18n="map.temperature">Temperatura</option>
+                                    <option value="vegetation" data-i18n="map.vegetation">Vegetación</option>
+                                    <option value="pollution" data-i18n="map.pollution">Contaminación</option>
+                                </select>
+                                <button class="control-btn" id="map-fullscreen">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div id="world-map" class="world-map"></div>
+                            <div class="map-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color good"></span>
+                                    <span data-i18n="legend.good">Bueno</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color moderate"></span>
+                                    <span data-i18n="legend.moderate">Moderado</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color unhealthy"></span>
+                                    <span data-i18n="legend.unhealthy">No saludable</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color critical"></span>
+                                    <span data-i18n="legend.critical">Crítico</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sustainability Score -->
+                    <div class="dashboard-card score-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.sustainability_score">Puntuación de Sostenibilidad</h3>
+                            <div class="score-period">
+                                <select id="score-period" class="control-select">
+                                    <option value="today" data-i18n="period.today">Hoy</option>
+                                    <option value="week" data-i18n="period.week">Esta semana</option>
+                                    <option value="month" data-i18n="period.month">Este mes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="overall-score">
+                                <div class="score-circle">
+                                    <svg class="score-svg" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="45" class="score-bg"></circle>
+                                        <circle cx="50" cy="50" r="45" class="score-fill" id="score-circle"></circle>
+                                    </svg>
+                                    <div class="score-text">
+                                        <span class="score-number" id="overall-score">67</span>
+                                        <span class="score-max">/100</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="score-breakdown">
+                                <div class="score-item">
+                                    <span class="score-label" data-i18n="scores.air_quality">Calidad del Aire</span>
+                                    <div class="score-bar">
+                                        <div class="score-progress" style="width: 75%"></div>
+                                    </div>
+                                    <span class="score-value">75</span>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-label" data-i18n="scores.green_spaces">Espacios Verdes</span>
+                                    <div class="score-bar">
+                                        <div class="score-progress" style="width: 60%"></div>
+                                    </div>
+                                    <span class="score-value">60</span>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-label" data-i18n="scores.energy_efficiency">Eficiencia Energética</span>
+                                    <div class="score-bar">
+                                        <div class="score-progress" style="width: 82%"></div>
+                                    </div>
+                                    <span class="score-value">82</span>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-label" data-i18n="scores.carbon_footprint">Huella de Carbono</span>
+                                    <div class="score-bar">
+                                        <div class="score-progress warning" style="width: 35%"></div>
+                                    </div>
+                                    <span class="score-value">35</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Real-time Charts -->
+                    <div class="dashboard-card charts-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.realtime_data">Datos en Tiempo Real</h3>
+                            <div class="chart-controls">
+                                <select id="chart-metric" class="control-select">
+                                    <option value="co2" data-i18n="chart.co2_levels">Niveles CO2</option>
+                                    <option value="aqi" data-i18n="chart.air_quality">Calidad del Aire</option>
+                                    <option value="temperature" data-i18n="chart.temperature">Temperatura</option>
+                                    <option value="humidity" data-i18n="chart.humidity">Humedad</option>
+                                </select>
+                                <select id="chart-timeframe" class="control-select">
+                                    <option value="24h" data-i18n="timeframe.24h">Últimas 24h</option>
+                                    <option value="7d" data-i18n="timeframe.7d">Últimos 7 días</option>
+                                    <option value="30d" data-i18n="timeframe.30d">Últimos 30 días</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="realtime-chart" class="chart-canvas"></canvas>
+                            <div class="chart-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label" data-i18n="stats.current">Actual</span>
+                                    <span class="stat-value" id="current-value">418 ppm</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label" data-i18n="stats.trend">Tendencia</span>
+                                    <span class="stat-value trend-up" id="trend-value">+0.8%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label" data-i18n="stats.average">Promedio</span>
+                                    <span class="stat-value" id="average-value">415 ppm</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Achievements -->
+                    <div class="dashboard-card achievements-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.recent_achievements">Logros Recientes</h3>
+                            <a href="#achievements" class="view-all-link" data-i18n="common.view_all">Ver todos</a>
+                        </div>
+                        <div class="card-content">
+                            <div class="achievement-list" id="recent-achievements">
+                                <div class="achievement-item">
+                                    <div class="achievement-icon legendary">
+                                        <i class="fas fa-tree"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4 data-i18n="achievements.tree_hugger">Abrazador de Árboles</h4>
+                                        <p data-i18n="achievements.tree_hugger_desc">Monitoreó 50 ciudades con alta cobertura verde</p>
+                                        <span class="achievement-points">+250 pts</span>
+                                    </div>
+                                    <div class="achievement-rarity legendary">
+                                        <span data-i18n="rarity.legendary">Legendario</span>
+                                    </div>
+                                </div>
+
+                                <div class="achievement-item">
+                                    <div class="achievement-icon epic">
+                                        <i class="fas fa-satellite"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4 data-i18n="achievements.data_explorer">Explorador de Datos</h4>
+                                        <p data-i18n="achievements.data_explorer_desc">Accedió a datos satelitales 100 veces</p>
+                                        <span class="achievement-points">+150 pts</span>
+                                    </div>
+                                    <div class="achievement-rarity epic">
+                                        <span data-i18n="rarity.epic">Épico</span>
+                                    </div>
+                                </div>
+
+                                <div class="achievement-item">
+                                    <div class="achievement-icon rare">
+                                        <i class="fas fa-fire"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4 data-i18n="achievements.weekly_warrior">Guerrero Semanal</h4>
+                                        <p data-i18n="achievements.weekly_warrior_desc">7 días consecutivos monitoreando</p>
+                                        <span class="achievement-points">+100 pts</span>
+                                    </div>
+                                    <div class="achievement-rarity rare">
+                                        <span data-i18n="rarity.rare">Raro</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Cities -->
+                    <div class="dashboard-card cities-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.top_cities">Ciudades Destacadas</h3>
+                            <div class="city-filter">
+                                <select id="city-filter" class="control-select">
+                                    <option value="best" data-i18n="filter.best">Mejores</option>
+                                    <option value="worst" data-i18n="filter.worst">Peores</option>
+                                    <option value="improved" data-i18n="filter.improved">Más mejoradas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="city-list" id="top-cities">
+                                <div class="city-item">
+                                    <div class="city-rank">1</div>
+                                    <div class="city-info">
+                                        <div class="city-name">Zúrich</div>
+                                        <div class="city-country">Suiza</div>
+                                    </div>
+                                    <div class="city-score good">92</div>
+                                    <div class="city-trend">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <span>+2</span>
+                                    </div>
+                                </div>
+
+                                <div class="city-item">
+                                    <div class="city-rank">2</div>
+                                    <div class="city-info">
+                                        <div class="city-name">Copenhague</div>
+                                        <div class="city-country">Dinamarca</div>
+                                    </div>
+                                    <div class="city-score good">89</div>
+                                    <div class="city-trend">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <span>+1</span>
+                                    </div>
+                                </div>
+
+                                <div class="city-item">
+                                    <div class="city-rank">3</div>
+                                    <div class="city-info">
+                                        <div class="city-name">Helsinki</div>
+                                        <div class="city-country">Finlandia</div>
+                                    </div>
+                                    <div class="city-score good">87</div>
+                                    <div class="city-trend stable">
+                                        <i class="fas fa-minus"></i>
+                                        <span>0</span>
+                                    </div>
+                                </div>
+
+                                <div class="city-item">
+                                    <div class="city-rank">4</div>
+                                    <div class="city-info">
+                                        <div class="city-name">Estocolmo</div>
+                                        <div class="city-country">Suecia</div>
+                                    </div>
+                                    <div class="city-score good">85</div>
+                                    <div class="city-trend">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <span>+3</span>
+                                    </div>
+                                </div>
+
+                                <div class="city-item">
+                                    <div class="city-rank">5</div>
+                                    <div class="city-info">
+                                        <div class="city-name">Vancouver</div>
+                                        <div class="city-country">Canadá</div>
+                                    </div>
+                                    <div class="city-score good">84</div>
+                                    <div class="city-trend">
+                                        <i class="fas fa-arrow-down"></i>
+                                        <span>-1</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Offline Indicator -->
+        <div id="offline-indicator" class="offline-indicator hidden">
+            <i class="fas fa-wifi-slash"></i>
+            <span data-i18n="offline.message">Modo offline activado</span>
+        </div>
+
+        <!-- Update Notification -->
+        <div id="update-notification" class="update-notification hidden">
+            <div class="notification-content">
+                <i class="fas fa-download"></i>
+                <span data-i18n="update.available">Nueva versión disponible</span>
+                <button id="update-btn" class="update-btn" data-i18n="update.install">Actualizar</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="settings.title">Configuración</h3>
+                <button class="modal-close" id="settings-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4 data-i18n="settings.general">General</h4>
+                    <div class="setting-item">
+                        <label data-i18n="settings.auto_update">Actualizaciones automáticas</label>
+                        <input type="checkbox" id="auto-update-toggle" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label data-i18n="settings.notifications">Notificaciones</label>
+                        <input type="checkbox" id="notifications-toggle" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label data-i18n="settings.offline_mode">Modo offline</label>
+                        <input type="checkbox" id="offline-mode-toggle" checked>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4 data-i18n="settings.data">Datos</h4>
+                    <div class="setting-item">
+                        <label data-i18n="settings.update_frequency">Frecuencia de actualización</label>
+                        <select id="update-frequency">
+                            <option value="1" data-i18n="frequency.1min">1 minuto</option>
+                            <option value="5" selected data-i18n="frequency.5min">5 minutos</option>
+                            <option value="15" data-i18n="frequency.15min">15 minutos</option>
+                            <option value="30" data-i18n="frequency.30min">30 minutos</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label data-i18n="settings.cache_size">Tamaño de caché</label>
+                        <span id="cache-size">25.3 MB / 50 MB</span>
+                        <button class="clear-cache-btn" id="clear-cache" data-i18n="settings.clear_cache">Limpiar</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4 data-i18n="settings.about">Acerca de</h4>
+                    <div class="about-info">
+                        <p><strong>EcoSat Monitor</strong> v1.0.0</p>
+                        <p data-i18n="settings.description">Dashboard de sostenibilidad urbana con datos satelitales</p>
+                        <p data-i18n="settings.developer">Desarrollado por Elizabeth Díaz Familia</p>
+                        <div class="about-links">
+                            <a href="https://github.com/Lizzy0981/ecosat-monitor" target="_blank" data-i18n="settings.github">GitHub</a>
+                            <a href="https://linkedin.com/in/eli-familia" target="_blank" data-i18n="settings.linkedin">LinkedIn</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Elizabeth Style -->
+    <footer class="footer-personal">
+        <div class="footer-container">
+            <div class="footer-content">
+                <h2 class="footer-name">Elizabeth Díaz Familia</h2>
+                
+                <div class="footer-social">
+                    <a href="https://github.com/Lizzy0981" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/eli-familia" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://twitter.com/Lizzyfamilia" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://lizzy0981.github.io" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                </div>
+                
+                <div class="footer-message">
+                    <p class="footer-motto">Data Science & Advanced Programming</p>
+                    <p class="footer-copyright">© 2025 | Made with 💜 and modern web technologies</p>
+                    <p class="footer-tech">
+                        <span class="tech-badge">Vanilla JS</span>
+                        <span class="tech-badge">Chart.js</span>
+                        <span class="tech-badge">Leaflet</span>
+                        <span class="tech-badge">PWA</span>
+                        <span class="tech-badge">NASA APIs</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="utils.js"></script>
+    <script src="translations.js"></script>
+    <script src="offline-storage.js"></script>
+    <script src="data-manager.js"></script>
+    <script src="satellite-service.js"></script>
+    <script src="charts-controller.js"></script>
+    <script src="gamification.js"></script>
+    <script src="src/app.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registrado:', registration);
+                })
+                .catch(error => {
+                    console.log('Error registrando Service Worker:', error);
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="earthGradient" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#4ade80;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" />
+    </radialGradient>
+    
+    <radialGradient id="oceanGradient" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#0284c7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0369a1;stop-opacity:1" />
+    </radialGradient>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Earth base -->
+  <circle cx="100" cy="100" r="80" fill="url(#oceanGradient)" filter="url(#glow)">
+    <animateTransform attributeName="transform" type="rotate" 
+                      values="0 100 100;360 100 100" dur="10s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Continents -->
+  <g fill="url(#earthGradient)">
+    <animateTransform attributeName="transform" type="rotate" 
+                      values="0 100 100;360 100 100" dur="10s" repeatCount="indefinite"/>
+    
+    <!-- North America -->
+    <path d="M40,60 Q50,50 70,55 Q80,45 85,65 Q75,75 60,80 Q45,75 40,60 Z"/>
+    
+    <!-- South America -->
+    <path d="M50,120 Q60,110 70,130 Q65,150 55,145 Q50,135 50,120 Z"/>
+    
+    <!-- Europe -->
+    <path d="M90,55 Q100,50 110,60 Q105,70 95,65 Q90,60 90,55 Z"/>
+    
+    <!-- Africa -->
+    <path d="M95,70 Q105,65 115,85 Q110,110 100,115 Q95,95 95,70 Z"/>
+    
+    <!-- Asia -->
+    <path d="M115,50 Q140,45 155,70 Q150,85 130,80 Q120,65 115,50 Z"/>
+    
+    <!-- Australia -->
+    <path d="M130,120 Q145,115 150,125 Q145,135 135,130 Q130,125 130,120 Z"/>
+  </g>
+  
+  <!-- Atmosphere glow -->
+  <circle cx="100" cy="100" r="85" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0.6">
+    <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Satellite orbit -->
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#fbbf24" stroke-width="1" stroke-dasharray="3,3" opacity="0.7">
+    <animateTransform attributeName="transform" type="rotate" 
+                      values="0 100 100;-360 100 100" dur="8s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Satellite -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" 
+                      values="0 100 100;-360 100 100" dur="8s" repeatCount="indefinite"/>
+    <rect x="193" y="98" width="8" height="4" fill="#fbbf24" rx="1"/>
+    <line x1="189" y1="100" x2="193" y2="100" stroke="#fbbf24" stroke-width="1"/>
+    <line x1="201" y1="100" x2="205" y2="100" stroke="#fbbf24" stroke-width="1"/>
+  </g>
+  
+  <!-- Data streams -->
+  <g opacity="0.4">
+    <circle cx="60" cy="70" r="2" fill="#3b82f6">
+      <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" begin="0s"/>
+    </circle>
+    <circle cx="120" cy="80" r="2" fill="#ef4444">
+      <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+    </circle>
+    <circle cx="90" cy="130" r="2" fill="#22c55e">
+      <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" begin="1s"/>
+    </circle>
+    <circle cx="140" cy="110" r="2" fill="#f59e0b">
+      <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" begin="1.5s"/>
+    </circle>
+  </g>
+</svg>

@@ -1,0 +1,75 @@
+# robots.txt for EcoSat Monitor
+# Author: Elizabeth Díaz Familia
+# https://lizzy0981.github.io/ecosat-monitor/
+
+User-agent: *
+Allow: /
+
+# Allow all search engines to crawl
+Allow: /index.html
+Allow: /assets/
+Allow: /manifest.json
+
+# Disallow service worker and config files
+Disallow: /service-worker.js
+Disallow: /sw.js
+Disallow: /*.js$
+Disallow: /*.css$
+
+# Allow specific important pages
+Allow: /offline.html
+
+# Sitemap location
+Sitemap: https://lizzy0981.github.io/ecosat-monitor/sitemap.xml
+
+# Crawl delay (be respectful)
+Crawl-delay: 1
+
+# Allow popular search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+# Archive crawlers
+User-agent: ia_archiver
+Allow: /
+
+# SEO and analytics tools
+User-agent: AhrefsBot
+Crawl-delay: 10
+Allow: /
+
+User-agent: MJ12bot
+Crawl-delay: 10
+Allow: /
+
+# Block aggressive crawlers
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MajesticSEO
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /

@@ -1,0 +1,196 @@
+MIT License
+
+Copyright (c) 2025 Elizabeth Díaz Familia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Additional Information:
+
+Project: EcoSat Monitor - Urban Sustainability Dashboard
+Author: Elizabeth Díaz Familia
+Website: https://lizzy0981.github.io
+Email: lizzyfamilia@gmail.com
+Repository: https://github.com/Lizzy0981/ecosat-monitor
+
+MIT License
+
+Copyright (c) 2025 Elizabeth Díaz Familia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Additional Information:
+
+Project: EcoSat Monitor - Urban Sustainability Dashboard
+Author: Elizabeth Díaz Familia
+Website: https://lizzy0981.github.io
+Email: lizzyfamilia@gmail.com
+Repository: https://github.com/Lizzy0981/ecosat-monitor
+
+This project represents a professional implementation of environmental monitoring 
+through advanced data science applications with real-time satellite data integration.
+
+The technologies and methodologies implemented in this software are based on 
+established environmental science and data analysis principles:
+
+- NASA Earth Imagery API: Official satellite data from Landsat missions
+- OpenWeatherMap Air Pollution API: Real-time air quality measurements
+- NOAA Climate Data API: Historical and current climate information
+- ESA Copernicus Atmosphere API: European satellite atmospheric data
+- Chart.js: Professional data visualization library
+- Leaflet: Open-source interactive mapping library
+- Progressive Web App (PWA): Modern web application standards
+- IndexedDB: Browser-based offline storage for data persistence
+
+Educational Use:
+This software is particularly suited for educational purposes in:
+- Environmental science and sustainability studies
+- Data science and environmental data analysis
+- Web development and progressive web applications
+- Geographic Information Systems (GIS) and satellite data
+- User interface design for scientific applications
+- Real-time data visualization and dashboard development
+
+Environmental Impact:
+This application promotes environmental awareness by:
+- Providing accessible environmental data visualization
+- Encouraging monitoring of air quality and climate metrics
+- Gamifying environmental consciousness and education
+- Supporting offline functionality to reduce data usage
+- Demonstrating sustainable web development practices
+
+Commercial Use:
+While this software is free for commercial use under the MIT license, 
+attribution to the original author is appreciated but not required.
+The application integrates with publicly available APIs that may have
+their own terms of service and usage limitations.
+
+API Usage Disclaimer:
+This application utilizes third-party APIs for environmental data:
+- NASA APIs are provided under their open data policy
+- OpenWeatherMap has free tier limitations (60 calls/minute)
+- NOAA data is publicly available for non-commercial use
+- Users should review individual API terms for commercial applications
+
+Contributing:
+Contributions, issues, and feature requests are welcome. Please refer to 
+the project repository for contribution guidelines. Special consideration
+is given to contributions that:
+- Improve environmental data accuracy or sources
+- Enhance accessibility and user experience
+- Add support for additional environmental metrics
+- Improve offline functionality and data synchronization
+
+Disclaimer:
+This software is designed for educational, research, and general environmental
+monitoring purposes. While it uses official data sources, it should not be
+used as the sole basis for critical environmental or safety decisions.
+For professional environmental monitoring, emergency situations, or 
+regulatory compliance, please consult certified environmental monitoring
+systems and official governmental sources.
+
+Data Privacy:
+This application processes environmental data and user preferences locally
+when possible. No personal environmental data is transmitted to third parties
+beyond the necessary API calls for public environmental information.
+User achievement and preference data is stored locally using browser storage.
+
+The technologies and methodologies implemented in this software are based on 
+established environmental science and data analysis principles:
+
+- NASA Earth Imagery API: Official satellite data from Landsat missions
+- OpenWeatherMap Air Pollution API: Real-time air quality measurements
+- NOAA Climate Data API: Historical and current climate information
+- ESA Copernicus Atmosphere API: European satellite atmospheric data
+- Chart.js: Professional data visualization library
+- Leaflet: Open-source interactive mapping library
+- Progressive Web App (PWA): Modern web application standards
+- IndexedDB: Browser-based offline storage for data persistence
+
+Educational Use:
+This software is particularly suited for educational purposes in:
+- Environmental science and sustainability studies
+- Data science and environmental data analysis
+- Web development and progressive web applications
+- Geographic Information Systems (GIS) and satellite data
+- User interface design for scientific applications
+- Real-time data visualization and dashboard development
+
+Environmental Impact:
+This application promotes environmental awareness by:
+- Providing accessible environmental data visualization
+- Encouraging monitoring of air quality and climate metrics
+- Gamifying environmental consciousness and education
+- Supporting offline functionality to reduce data usage
+- Demonstrating sustainable web development practices
+
+Commercial Use:
+While this software is free for commercial use under the MIT license, 
+attribution to the original author is appreciated but not required.
+The application integrates with publicly available APIs that may have
+their own terms of service and usage limitations.
+
+API Usage Disclaimer:
+This application utilizes third-party APIs for environmental data:
+- NASA APIs are provided under their open data policy
+- OpenWeatherMap has free tier limitations (60 calls/minute)
+- NOAA data is publicly available for non-commercial use
+- Users should review individual API terms for commercial applications
+
+Contributing:
+Contributions, issues, and feature requests are welcome. Please refer to 
+the project repository for contribution guidelines. Special consideration
+is given to contributions that:
+- Improve environmental data accuracy or sources
+- Enhance accessibility and user experience
+- Add support for additional environmental metrics
+- Improve offline functionality and data synchronization
+
+Disclaimer:
+This software is designed for educational, research, and general environmental
+monitoring purposes. While it uses official data sources, it should not be
+used as the sole basis for critical environmental or safety decisions.
+For professional environmental monitoring, emergency situations, or 
+regulatory compliance, please consult certified environmental monitoring
+systems and official governmental sources.
+
+Data Privacy:
+This application processes environmental data and user preferences locally
+when possible. No personal environmental data is transmitted to third parties
+beyond the necessary API calls for public environmental information.
+User achievement and preference data is stored locally using browser storage.

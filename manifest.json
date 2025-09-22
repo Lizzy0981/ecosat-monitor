@@ -1,0 +1,267 @@
+{
+  "name": "EcoSat Monitor - Urban Sustainability Dashboard",
+  "short_name": "EcoSat Monitor",
+  "description": "Dashboard de sostenibilidad urbana con datos satelitales en tiempo real para monitoreo ambiental avanzado",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "start_url": "/ecosat-monitor/",
+  "scope": "/ecosat-monitor/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#3B82F6",
+  "background_color": "#1F2937",
+  "lang": "es",
+  "dir": "ltr",
+  
+  "icons": [
+    {
+      "src": "assets/icons/badge-72x72.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/action-dimiss.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/action-view.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "assets/screenshots/desktop-dashboard.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard principal con mapa global y métricas en tiempo real"
+    },
+    {
+      "src": "assets/screenshots/mobile-dashboard.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Vista móvil del dashboard de sostenibilidad"
+    }
+  ],
+  
+  "categories": [
+    "education",
+    "productivity",
+    "utilities",
+    "science"
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Dashboard Global",
+      "short_name": "Dashboard",
+      "description": "Ver métricas globales de sostenibilidad",
+      "url": "/ecosat-monitor/?view=dashboard",
+      "icons": [
+        {
+          "src": "assets/icons/shortcut-dashboard.svg",
+          "sizes": "any"
+        }
+      ]
+    },
+    {
+      "name": "Explorar Ciudades",
+      "short_name": "Ciudades",
+      "description": "Explorar datos de ciudades específicas",
+      "url": "/ecosat-monitor/?view=cities",
+      "icons": [
+        {
+          "src": "assets/icons/shortcut-cities.svg",
+          "sizes": "any"
+        }
+      ]
+    },
+    {
+      "name": "Analytics Avanzado",
+      "short_name": "Analytics",
+      "description": "Ver análisis detallado de tendencias",
+      "url": "/ecosat-monitor/?view=analytics",
+      "icons": [
+        {
+          "src": "assets/icons/shortcut-analytics.svg",
+          "sizes": "any"
+        }
+      ]
+    },
+    {
+      "name": "Mis Logros",
+      "short_name": "Logros",
+      "description": "Ver logros y estadísticas personales",
+      "url": "/ecosat-monitor/?view=achievements",
+      "icons": [
+        {
+          "src": "assets/icons/shortcut-achievements.svg",
+          "sizes": "any"
+        }
+      ]
+    }
+  ],
+  
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://lizzy0981.github.io/ecosat-monitor/",
+      "id": "ecosat-monitor-webapp"
+    }
+  ],
+  
+  "prefer_related_applications": false,
+  
+  "protocol_handlers": [
+    {
+      "protocol": "web+ecosat",
+      "url": "/ecosat-monitor/?data=%s"
+    }
+  ],
+  
+  "file_handlers": [
+    {
+      "action": "/ecosat-monitor/?import=true",
+      "accept": {
+        "application/json": [".json"],
+        "text/csv": [".csv"]
+      }
+    }
+  ],
+  
+  "share_target": {
+    "action": "/ecosat-monitor/share/",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "data",
+          "accept": ["application/json", "text/csv", "image/*"]
+        }
+      ]
+    }
+  },
+  
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  
+  "handle_links": "preferred",
+  
+  "id": "ecosat-monitor",
+  
+  "author": {
+    "name": "Elizabeth Díaz Familia",
+    "email": "lizzyfamilia@gmail.com",
+    "url": "https://lizzy0981.github.io"
+  },
+  
+  "publisher": {
+    "name": "Elizabeth Díaz Familia",
+    "url": "https://github.com/Lizzy0981"
+  },
+  
+  "license": "MIT",
+  
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  
+  "permissions": [
+    "storage",
+    "background-sync",
+    "geolocation"
+  ],
+  
+  "features": [
+    "offline-functionality",
+    "real-time-data",
+    "satellite-imagery",
+    "environmental-monitoring",
+    "data-visualization",
+    "gamification",
+    "multi-language",
+    "auto-update"
+  ],
+  
+  "custom": {
+    "updateChannel": "stable",
+    "autoUpdate": true,
+    "offlineSupport": true,
+    "dataRetention": "7days",
+    "compressionEnabled": true,
+    "encryptionEnabled": true,
+    "analyticsEnabled": true,
+    "crashReporting": false,
+    "telemetryEnabled": false,
+    "maxCacheSize": "50MB",
+    "supportedAPIs": [
+      "NASA Earth Imagery API",
+      "OpenWeatherMap Air Pollution API",
+      "NOAA Climate Data API",
+      "ESA Copernicus Atmosphere API",
+      "World Bank Environmental Data API"
+    ],
+    "developmentInfo": {
+      "framework": "Vanilla JavaScript ES2023",
+      "buildTools": ["HTML5", "CSS3", "Chart.js", "Leaflet"],
+      "testingFramework": "Jest",
+      "codeQuality": ["ESLint", "Prettier"],
+      "accessibility": "WCAG 2.1 AA+",
+      "performance": "Lighthouse 90+",
+      "security": ["HTTPS", "CSP", "Data Encryption"]
+    },
+    "deployment": {
+      "platform": "GitHub Pages",
+      "repository": "https://github.com/Lizzy0981/ecosat-monitor",
+      "branch": "main",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist",
+      "customDomain": false,
+      "cdnEnabled": false
+    }
+  }
+}

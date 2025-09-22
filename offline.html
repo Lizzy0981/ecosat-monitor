@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modo Offline - EcoSat Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .offline-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        
+        .offline-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .offline-message {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+        
+        .offline-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .offline-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .offline-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .offline-features {
+            margin-top: 3rem;
+            max-width: 600px;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">
+            <i class="fas fa-wifi-slash"></i>
+        </div>
+        
+        <h1 class="offline-title">Modo Offline Activado</h1>
+        
+        <p class="offline-message">
+            No hay conexión a internet disponible, pero EcoSat Monitor funciona completamente offline 
+            con datos almacenados localmente. Todas las funciones principales siguen disponibles.
+        </p>
+        
+        <div class="offline-actions">
+            <a href="/" class="offline-btn">
+                <i class="fas fa-home"></i> Ir al Dashboard
+            </a>
+            <button class="offline-btn" onclick="location.reload()">
+                <i class="fas fa-sync"></i> Reintentar Conexión
+            </button>
+        </div>
+        
+        <div class="offline-features">
+            <h3>Funciones Disponibles Offline:</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <i class="fas fa-chart-line"></i>
+                    <strong>Visualización de Datos</strong>
+                    <p>Acceso a datos almacenados localmente</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-trophy"></i>
+                    <strong>Sistema de Logros</strong>
+                    <p>Progreso y achievements guardados</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-cog"></i>
+                    <strong>Configuración</strong>
+                    <p>Ajustes y preferencias locales</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-sync"></i>
+                    <strong>Sincronización</strong>
+                    <p>Los datos se actualizarán al reconectar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check for connectivity periodically
+        setInterval(() => {
+            if (navigator.onLine) {
+                window.location.href = '/';
+            }
+        }, 5000);
+        
+        // Listen for online event
+        window.addEventListener('online', () => {
+            window.location.href = '/';
+        });
+    </script>
+</body>
+</html>
