@@ -22,7 +22,7 @@ const FILES_TO_CACHE = [
     '/ecosat-monitor/src/offline-storage.js',
     '/ecosat-monitor/src/translations.js',
     '/ecosat-monitor/src/utils.js',
-    '/ecosat-monitor/src/manifest.json',
+    '/ecosat-monitor/manifest.json',
     
     
     // External dependencies
