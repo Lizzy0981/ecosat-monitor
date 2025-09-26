@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EcoSat Monitor - Dashboard de sostenibilidad urbana con datos satelitales en tiempo real">
+    <meta name="keywords" content="sostenibilidad, medio ambiente, datos satelitales, NASA, calidad aire, ciencia datos">
+    <meta name="author" content="Elizabeth Díaz Familia">
+    <meta name="theme-color" content="#3B82F6">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="EcoSat Monitor - Urban Sustainability Dashboard">
+    <meta property="og:description" content="Monitoreo de sostenibilidad urbana con datos satelitales en tiempo real">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://lizzy0981.github.io/ecosat-monitor">
+    <meta property="og:image" content="https://lizzy0981.github.io/ecosat-monitor/assets/images/og-image.svg">
+    
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.png">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/icons/icon-512x512.png">
+    
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="src/styles.css">
+    
+    <title>EcoSat Monitor - Dashboard de Sostenibilidad Urbana</title>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="earth-spinner">
+                <div class="earth"></div>
+                <div class="satellite"></div>
+            </div>
+            <h3 data-i18n="loading.title">Conectando con satélites...</h3>
+            <p data-i18n="loading.subtitle">Obteniendo datos ambientales en tiempo real</p>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <i class="fas fa-satellite"></i>
+                        <h1>EcoSat Monitor</h1>
+                    </div>
+                    <div class="live-indicator">
+                        <span class="pulse-dot"></span>
+                        <span data-i18n="header.live">LIVE</span>
+                    </div>
+                    <!-- Satellite Status Indicator -->
+                    <div class="satellite-status" id="satellite-status">
+                        <i class="fas fa-satellite-dish"></i>
+                        <span class="status-text" id="satellite-status-text">Landsat-8 Online</span>
+                        <div class="satellite-signal">
+                            <span class="signal-bar"></span>
+                            <span class="signal-bar"></span>
+                            <span class="signal-bar"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="nav-menu">
+                    <button class="nav-btn active" data-section="dashboard" data-i18n="nav.dashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </button>
+                    <button class="nav-btn" data-section="cities" data-i18n="nav.cities">
+                        <i class="fas fa-city"></i> Ciudades
+                    </button>
+                    <button class="nav-btn" data-section="analytics" data-i18n="nav.analytics">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </button>
+                    <button class="nav-btn" data-section="satellite" data-i18n="nav.satellite">
+                        <i class="fas fa-satellite"></i> Satélites
+                    </button>
+                    <button class="nav-btn" data-section="achievements" data-i18n="nav.achievements">
+                        <i class="fas fa-medal"></i> Logros
+                    </button>
+                </nav>
+
+                <div class="header-controls">
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-trophy"></i>
+                            <span id="user-points">2,450</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-fire"></i>
+                            <span id="user-streak">7</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-star"></i>
+                            <span id="user-level">8</span>
+                        </div>
+                    </div>
+
+                    <div class="control-buttons">
+                        <button class="control-btn" id="theme-toggle" title="Cambiar tema">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <button class="control-btn" id="language-toggle" title="Cambiar idioma">
+                            <span class="lang-text">ES</span>
+                        </button>
+                        <button class="control-btn" id="settings-btn" title="Configuración">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application -->
+    <main class="main-app">
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="app-section active">
+            <div class="container">
+                <!-- Global Metrics Bar -->
+                <div class="metrics-bar">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-label" data-i18n="metrics.air_quality">Calidad del Aire</span>
+                            <span class="metric-value" id="global-aqi">67</span>
+                            <span class="metric-status moderate" data-i18n="status.moderate">Moderado</span>
+                            <div class="metric-source">
+                                <i class="fas fa-satellite"></i>
+                                <span>Sentinel-5P</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-label" data-i18n="metrics.temperature">Temperatura Global</span>
+                            <span class="metric-value" id="global-temp">+1.2°C</span>
+                            <span class="metric-status warning" data-i18n="status.above_average">Sobre promedio</span>
+                            <div class="metric-source">
+                                <i class="fas fa-satellite"></i>
+                                <span>MODIS Terra</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-label" data-i18n="metrics.vegetation">Índice Vegetación</span>
+                            <span class="metric-value" id="vegetation-index">0.73</span>
+                            <span class="metric-status good" data-i18n="status.good">Bueno</span>
+                            <div class="metric-source">
+                                <i class="fas fa-satellite"></i>
+                                <span>Landsat-8</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-label" data-i18n="metrics.deforestation">Deforestación</span>
+                            <span class="metric-value" id="deforestation-rate">-2.4%</span>
+                            <span class="metric-status critical" data-i18n="status.critical">Crítico</span>
+                            <div class="metric-source">
+                                <i class="fas fa-satellite"></i>
+                                <span>Sentinel-2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Interactive World Map with Satellite Layers -->
+                    <div class="dashboard-card map-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.satellite_map">Mapa Satelital Interactivo</h3>
+                            <div class="card-controls">
+                                <select id="satellite-layer-select" class="control-select">
+                                    <option value="vegetation" data-i18n="satellite.vegetation">Vegetación (NDVI)</option>
+                                    <option value="temperature" data-i18n="satellite.temperature">Temperatura LST</option>
+                                    <option value="air-quality" data-i18n="satellite.air_quality">Calidad del Aire</option>
+                                    <option value="deforestation" data-i18n="satellite.deforestation">Deforestación</option>
+                                    <option value="urban-growth" data-i18n="satellite.urban_growth">Crecimiento Urbano</option>
+                                </select>
+                                <select id="satellite-source" class="control-select">
+                                    <option value="landsat8">Landsat-8</option>
+                                    <option value="sentinel2">Sentinel-2</option>
+                                    <option value="modis">MODIS</option>
+                                    <option value="sentinel5p">Sentinel-5P</option>
+                                </select>
+                                <button class="control-btn" id="map-fullscreen">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div id="satellite-map" class="world-map"></div>
+                            <div class="satellite-info">
+                                <div class="satellite-details">
+                                    <span class="satellite-name" id="active-satellite">Landsat-8</span>
+                                    <span class="last-pass" id="last-satellite-pass">Último pase: 14:32 UTC</span>
+                                    <span class="resolution" id="satellite-resolution">30m resolución</span>
+                                </div>
+                                <div class="map-legend">
+                                    <div class="legend-item">
+                                        <span class="legend-color vegetation-high"></span>
+                                        <span data-i18n="legend.high">Alto</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color vegetation-medium"></span>
+                                        <span data-i18n="legend.medium">Medio</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color vegetation-low"></span>
+                                        <span data-i18n="legend.low">Bajo</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color vegetation-none"></span>
+                                        <span data-i18n="legend.none">Sin datos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Satellite Data Analysis -->
+                    <div class="dashboard-card satellite-analysis-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.satellite_analysis">Análisis Satelital</h3>
+                            <div class="analysis-period">
+                                <select id="analysis-period" class="control-select">
+                                    <option value="realtime" data-i18n="period.realtime">Tiempo Real</option>
+                                    <option value="daily" data-i18n="period.daily">Diario</option>
+                                    <option value="weekly" data-i18n="period.weekly">Semanal</option>
+                                    <option value="monthly" data-i18n="period.monthly">Mensual</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="satellite-metrics">
+                                <div class="satellite-metric">
+                                    <div class="metric-header">
+                                        <i class="fas fa-leaf"></i>
+                                        <span>NDVI Global</span>
+                                    </div>
+                                    <div class="metric-value-large" id="global-ndvi">0.73</div>
+                                    <div class="metric-change positive">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <span>+0.05 vs mes anterior</span>
+                                    </div>
+                                </div>
+
+                                <div class="satellite-metric">
+                                    <div class="metric-header">
+                                        <i class="fas fa-fire"></i>
+                                        <span>Focos de Calor</span>
+                                    </div>
+                                    <div class="metric-value-large" id="fire-hotspots">1,247</div>
+                                    <div class="metric-change negative">
+                                        <i class="fas fa-arrow-down"></i>
+                                        <span>-15% vs semana anterior</span>
+                                    </div>
+                                </div>
+
+                                <div class="satellite-metric">
+                                    <div class="metric-header">
+                                        <i class="fas fa-cloud"></i>
+                                        <span>Cobertura Nubosa</span>
+                                    </div>
+                                    <div class="metric-value-large" id="cloud-coverage">32%</div>
+                                    <div class="metric-change neutral">
+                                        <i class="fas fa-minus"></i>
+                                        <span>Sin cambios</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="satellite-chart-container">
+                                <canvas id="satellite-trends-chart" class="chart-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Real-time Satellite Data -->
+                    <div class="dashboard-card satellite-data-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.realtime_satellite">Datos Satelitales en Tiempo Real</h3>
+                            <div class="data-refresh">
+                                <button class="control-btn" id="refresh-satellite-data" title="Actualizar datos">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <span class="last-update" id="last-satellite-update">Actualizado: hace 2 min</span>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="satellite-passes">
+                                <h4>Próximos Pases Satelitales</h4>
+                                <div class="pass-list" id="satellite-passes">
+                                    <div class="pass-item">
+                                        <div class="satellite-icon landsat">
+                                            <i class="fas fa-satellite"></i>
+                                        </div>
+                                        <div class="pass-info">
+                                            <span class="satellite-name">Landsat-8</span>
+                                            <span class="pass-time">15:42 UTC</span>
+                                            <span class="coverage-area">Amazonía</span>
+                                        </div>
+                                        <div class="pass-quality excellent">Excelente</div>
+                                    </div>
+
+                                    <div class="pass-item">
+                                        <div class="satellite-icon sentinel">
+                                            <i class="fas fa-satellite-dish"></i>
+                                        </div>
+                                        <div class="pass-info">
+                                            <span class="satellite-name">Sentinel-2</span>
+                                            <span class="pass-time">16:18 UTC</span>
+                                            <span class="coverage-area">Europa Occidental</span>
+                                        </div>
+                                        <div class="pass-quality good">Buena</div>
+                                    </div>
+
+                                    <div class="pass-item">
+                                        <div class="satellite-icon modis">
+                                            <i class="fas fa-globe"></i>
+                                        </div>
+                                        <div class="pass-info">
+                                            <span class="satellite-name">MODIS Terra</span>
+                                            <span class="pass-time">17:03 UTC</span>
+                                            <span class="coverage-area">Pacífico Norte</span>
+                                        </div>
+                                        <div class="pass-quality moderate">Moderada</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="satellite-stats">
+                                <div class="stat-grid">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Imágenes procesadas hoy</span>
+                                        <span class="stat-value" id="images-processed">2,847</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Área cubierta</span>
+                                        <span class="stat-value" id="area-covered">45.2M km²</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Resolución promedio</span>
+                                        <span class="stat-value" id="avg-resolution">25m</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Latencia de datos</span>
+                                        <span class="stat-value" id="data-latency">47s</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Achievements -->
+                    <div class="dashboard-card achievements-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.recent_achievements">Logros Recientes</h3>
+                            <a href="#achievements" class="view-all-link" data-i18n="common.view_all">Ver todos</a>
+                        </div>
+                        <div class="card-content">
+                            <div class="achievement-list" id="recent-achievements">
+                                <div class="achievement-item">
+                                    <div class="achievement-icon legendary">
+                                        <i class="fas fa-satellite"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4 data-i18n="achievements.satellite_master">Maestro Satelital</h4>
+                                        <p data-i18n="achievements.satellite_master_desc">Analizó datos de 5 satélites diferentes</p>
+                                        <span class="achievement-points">+350 pts</span>
+                                    </div>
+                                    <div class="achievement-rarity legendary">
+                                        <span data-i18n="rarity.legendary">Legendario</span>
+                                    </div>
+                                </div>
+
+                                <div class="achievement-item">
+                                    <div class="achievement-icon epic">
+                                        <i class="fas fa-leaf"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4 data-i18n="achievements.vegetation_tracker">Rastreador de Vegetación</h4>
+                                        <p data-i18n="achievements.vegetation_tracker_desc">Monitoreó cambios NDVI por 30 días</p>
+                                        <span class="achievement-points">+200 pts</span>
+                                    </div>
+                                    <div class="achievement-rarity epic">
+                                        <span data-i18n="rarity.epic">Épico</span>
+                                    </div>
+                                </div>
+
+                                <div class="achievement-item">
+                                    <div class="achievement-icon rare">
+                                        <i class="fas fa-eye"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4 data-i18n="achievements.data_observer">Observador de Datos</h4>
+                                        <p data-i18n="achievements.data_observer_desc">Revisó 100 imágenes satelitales</p>
+                                        <span class="achievement-points">+125 pts</span>
+                                    </div>
+                                    <div class="achievement-rarity rare">
+                                        <span data-i18n="rarity.rare">Raro</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Environmental Zones -->
+                    <div class="dashboard-card zones-card">
+                        <div class="card-header">
+                            <h3 data-i18n="dashboard.environmental_zones">Zonas Ambientales</h3>
+                            <div class="zone-filter">
+                                <select id="zone-filter" class="control-select">
+                                    <option value="best" data-i18n="filter.healthiest">Más Saludables</option>
+                                    <option value="critical" data-i18n="filter.critical">Críticas</option>
+                                    <option value="improving" data-i18n="filter.improving">En Mejora</option>
+                                    <option value="degrading" data-i18n="filter.degrading">En Degradación</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="zone-list" id="environmental-zones">
+                                <div class="zone-item">
+                                    <div class="zone-rank">1</div>
+                                    <div class="zone-info">
+                                        <div class="zone-name">Reserva Amazónica Central</div>
+                                        <div class="zone-location">Brasil</div>
+                                        <div class="zone-coordinates">3°S 60°W</div>
+                                    </div>
+                                    <div class="zone-metrics">
+                                        <span class="ndvi-score excellent">NDVI: 0.89</span>
+                                        <span class="deforestation-rate good">-0.1%</span>
+                                    </div>
+                                    <div class="zone-trend excellent">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <span>+0.03</span>
+                                    </div>
+                                </div>
+
+                                <div class="zone-item">
+                                    <div class="zone-rank">2</div>
+                                    <div class="zone-info">
+                                        <div class="zone-name">Bosque Boreal Canadiense</div>
+                                        <div class="zone-location">Canadá</div>
+                                        <div class="zone-coordinates">55°N 105°W</div>
+                                    </div>
+                                    <div class="zone-metrics">
+                                        <span class="ndvi-score excellent">NDVI: 0.85</span>
+                                        <span class="deforestation-rate good">0.0%</span>
+                                    </div>
+                                    <div class="zone-trend good">
+                                        <i class="fas fa-arrow-up"></i>
+                                        <span>+0.02</span>
+                                    </div>
+                                </div>
+
+                                <div class="zone-item">
+                                    <div class="zone-rank">3</div>
+                                    <div class="zone-info">
+                                        <div class="zone-name">Taiga Siberiana</div>
+                                        <div class="zone-location">Rusia</div>
+                                        <div class="zone-coordinates">65°N 100°E</div>
+                                    </div>
+                                    <div class="zone-metrics">
+                                        <span class="ndvi-score good">NDVI: 0.78</span>
+                                        <span class="deforestation-rate moderate">-0.3%</span>
+                                    </div>
+                                    <div class="zone-trend stable">
+                                        <i class="fas fa-minus"></i>
+                                        <span>0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Offline Indicator -->
+        <div id="offline-indicator" class="offline-indicator hidden">
+            <i class="fas fa-wifi-slash"></i>
+            <span data-i18n="offline.message">Modo offline activado</span>
+        </div>
+
+        <!-- Update Notification -->
+        <div id="update-notification" class="update-notification hidden">
+            <div class="notification-content">
+                <i class="fas fa-download"></i>
+                <span data-i18n="update.available">Nueva versión disponible</span>
+                <button id="update-btn" class="update-btn" data-i18n="update.install">Actualizar</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="settings.title">Configuración</h3>
+                <button class="modal-close" id="settings-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4 data-i18n="settings.satellite">Configuración Satelital</h4>
+                    <div class="setting-item">
+                        <label data-i18n="settings.preferred_satellite">Satélite preferido</label>
+                        <select id="preferred-satellite">
+                            <option value="landsat8">Landsat-8</option>
+                            <option value="sentinel2">Sentinel-2</option>
+                            <option value="modis">MODIS</option>
+                            <option value="sentinel5p">Sentinel-5P</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label data-i18n="settings.data_resolution">Resolución de datos</label>
+                        <select id="data-resolution">
+                            <option value="30m">30m - Alta resolución</option>
+                            <option value="100m">100m - Resolución media</option>
+                            <option value="500m">500m - Resolución baja</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4 data-i18n="settings.general">General</h4>
+                    <div class="setting-item">
+                        <label data-i18n="settings.auto_update">Actualizaciones automáticas</label>
+                        <input type="checkbox" id="auto-update-toggle" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label data-i18n="settings.notifications">Notificaciones</label>
+                        <input type="checkbox" id="notifications-toggle" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label data-i18n="settings.offline_mode">Modo offline</label>
+                        <input type="checkbox" id="offline-mode-toggle" checked>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4 data-i18n="settings.about">Acerca de</h4>
+                    <div class="about-info">
+                        <p><strong>EcoSat Monitor</strong> v1.1.0</p>
+                        <p data-i18n="settings.description">Dashboard de sostenibilidad con datos satelitales en tiempo real</p>
+                        <p data-i18n="settings.developer">Desarrollado por Elizabeth Díaz Familia</p>
+                        <div class="about-links">
+                            <a href="https://github.com/Lizzy0981/ecosat-monitor" target="_blank" data-i18n="settings.github">GitHub</a>
+                            <a href="https://linkedin.com/in/eli-familia" target="_blank" data-i18n="settings.linkedin">LinkedIn</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Elizabeth Style -->
+    <footer class="footer-personal">
+        <div class="footer-container">
+            <div class="footer-content-personal">
+                <h2 class="footer-name">Elizabeth Díaz Familia</h2>
+                
+                <div class="footer-social">
+                    <a href="https://github.com/Lizzy0981" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <svg class="social-icon github-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                        </svg>
+                    </a>
+                    
+                    <a href="https://linkedin.com/in/eli-familia" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <svg class="social-icon linkedin-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                            <rect x="2" y="9" width="4" height="12"></rect>
+                            <circle cx="4" cy="4" r="2"></circle>
+                        </svg>
+                    </a>
+                    
+                    <a href="https://twitter.com/Lizzyfamilia" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <svg class="social-icon twitter-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                        </svg>
+                    </a>
+
+                    <a href="https://lizzy0981.github.io" target="_blank" rel="noopener noreferrer" class="social-link" title="Portfolio">
+                        <svg class="social-icon portfolio-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M2 12h20"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="footer-message">
+                    <p class="footer-motto">Data Science & Advanced Programming</p>
+                    <p class="footer-copyright">© 2025 | Made with 💜 and modern web technologies</p>
+                    <p class="footer-tech">
+                        <span class="tech-badge">Vanilla JS</span>
+                        <span class="tech-badge">Chart.js</span>
+                        <span class="tech-badge">Leaflet</span>
+                        <span class="tech-badge">PWA</span>
+                        <span class="tech-badge">NASA APIs</span>
+                        <span class="tech-badge">Satellite Data</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/translations.js"></script>
+    <script src="src/offline-storage.js"></script>
+    <script src="src/data-manager.js"></script>
+    <script src="src/satellite-service.js"></script>
+    <script src="src/charts-controller.js"></script>
+    <script src="src/gamification.js"></script>
+    <script src="src/app.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/ecosat-monitor/src/service-worker.js')
+            .then(registration => {
+                console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
+    </script>
+
+    <!-- Satellite Data Integration Script -->
+    <script>
+    // Initialize satellite data integration on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Remove any audio-related elements that might still exist
+        const audioElements = document.querySelectorAll('[class*="audio"], [id*="audio"]');
+        audioElements.forEach(element => {
+            if (element.id !== 'app' && !element.closest('.footer-personal')) {
+                element.remove();
+            }
+        });
+
+        // Initialize satellite status indicator animation
+        const satelliteStatus = document.getElementById('satellite-status');
+        if (satelliteStatus) {
+            const signalBars = satelliteStatus.querySelectorAll('.signal-bar');
+            let currentBar = 0;
+            
+            setInterval(() => {
+                signalBars.forEach((bar, index) => {
+                    bar.style.opacity = index <= currentBar ? '1' : '0.3';
+                });
+                currentBar = (currentBar + 1) % signalBars.length;
+            }, 800);
+        }
+
+        // Update satellite status text periodically
+        const statusTexts = [
+            'Landsat-8 Online',
+            'Sentinel-2 Active',
+            'MODIS Scanning',
+            'Data Streaming...'
+        ];
+        let statusIndex = 0;
+        
+        setInterval(() => {
+            const statusElement = document.getElementById('satellite-status-text');
+            if (statusElement) {
+                statusElement.textContent = statusTexts[statusIndex];
+                statusIndex = (statusIndex + 1) % statusTexts.length;
+            }
+        }, 4000);
+
+        // Animate social media icons with bouncing effect
+        const socialLinks = document.querySelectorAll('.social-link');
+        socialLinks.forEach((link, index) => {
+            // Add staggered delay for each icon
+            link.style.animationDelay = `${index * 0.2}s`;
+            
+            // Add hover effect that enhances the bounce
+            link.addEventListener('mouseenter', function() {
+                this.style.animation = 'none';
+                this.offsetHeight; // Trigger reflow
+                this.style.animation = 'socialBounce 0.6s ease-in-out';
+            });
+        });
+
+        console.log('✅ Satellite data integration initialized');
+        console.log('✅ Audio panel removed successfully');
+        console.log('✅ Social media icons animated');
+    });
+    </script>
+
+    <!-- Social Media Icons Animation Styles -->
+    <style>
+    @keyframes socialBounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0) scale(1);
+        }
+        40% {
+            transform: translateY(-8px) scale(1.1);
+        }
+        60% {
+            transform: translateY(-4px) scale(1.05);
+        }
+    }
+
+    @keyframes continuousBounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-6px);
+        }
+    }
+
+    .social-link {
+        animation: continuousBounce 2s ease-in-out infinite;
+        transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+        animation: socialBounce 0.6s ease-in-out;
+        transform: scale(1.15);
+        color: #3B82F6;
+    }
+
+    /* Satellite Status Styles */
+    .satellite-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 20px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        font-size: 0.85rem;
+        color: #3B82F6;
+        margin-left: 16px;
+    }
+
+    .satellite-status i {
+        color: #10B981;
+        animation: pulse 2s infinite;
+    }
+
+    .satellite-signal {
+        display: flex;
+        gap: 2px;
+        align-items: flex-end;
+    }
+
+    .signal-bar {
+        width: 3px;
+        height: 12px;
+        background: #10B981;
+        border-radius: 1px;
+        transition: opacity 0.3s ease;
+    }
+
+    .signal-bar:nth-child(2) {
+        height: 16px;
+    }
+
+    .signal-bar:nth-child(3) {
+        height: 20px;
+    }
+
+    /* Enhanced metric cards for satellite data */
+    .metric-source {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.75rem;
+        color: #6B7280;
+        margin-top: 4px;
+    }
+
+    .metric-source i {
+        color: #3B82F6;
+    }
+
+    /* Satellite-specific styling */
+    .vegetation-high { background: #10B981; }
+    .vegetation-medium { background: #F59E0B; }
+    .vegetation-low { background: #EF4444; }
+    .vegetation-none { background: #6B7280; }
+
+    .pass-quality.excellent { background: #10B981; color: white; }
+    .pass-quality.good { background: #F59E0B; color: white; }
+    .pass-quality.moderate { background: #EF4444; color: white; }
+
+    .satellite-icon.landsat { color: #3B82F6; }
+    .satellite-icon.sentinel { color: #10B981; }
+    .satellite-icon.modis { color: #F59E0B; }
+
+    .ndvi-score.excellent { background: #10B981; color: white; padding: 2px 6px; border-radius: 12px; font-size: 0.75rem; }
+    .ndvi-score.good { background: #84CC16; color: white; padding: 2px 6px; border-radius: 12px; font-size: 0.75rem; }
+
+    .deforestation-rate.good { color: #10B981; font-weight: 600; }
+    .deforestation-rate.moderate { color: #F59E0B; font-weight: 600; }
+
+    .zone-trend.excellent i { color: #10B981; }
+    .zone-trend.good i { color: #84CC16; }
+    .zone-trend.stable i { color: #6B7280; }
+    </style>
+</body>
+</html>
