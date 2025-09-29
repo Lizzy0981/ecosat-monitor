@@ -4,8 +4,8 @@
   "description": "Dashboard de sostenibilidad urbana con datos satelitales en tiempo real para monitoreo ambiental avanzado",
   "version": "1.0.0",
   "manifest_version": 3,
-  "start_url": "/ecosat-monitor/",
-  "scope": "/ecosat-monitor/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "#3B82F6",
@@ -93,7 +93,7 @@
       "name": "Dashboard Global",
       "short_name": "Dashboard",
       "description": "Ver métricas globales de sostenibilidad",
-      "url": "/ecosat-monitor/?view=dashboard",
+      "url": "./?view=dashboard",
       "icons": [
         {
           "src": "assets/icons/shortcut-dashboard.svg",
@@ -105,7 +105,7 @@
       "name": "Explorar Ciudades",
       "short_name": "Ciudades",
       "description": "Explorar datos de ciudades específicas",
-      "url": "/ecosat-monitor/?view=cities",
+      "url": "./?view=cities",
       "icons": [
         {
           "src": "assets/icons/shortcut-cities.svg",
@@ -117,7 +117,7 @@
       "name": "Analytics Avanzado",
       "short_name": "Analytics",
       "description": "Ver análisis detallado de tendencias",
-      "url": "/ecosat-monitor/?view=analytics",
+      "url": "./?view=analytics",
       "icons": [
         {
           "src": "assets/icons/shortcut-analytics.svg",
@@ -129,7 +129,7 @@
       "name": "Mis Logros",
       "short_name": "Logros",
       "description": "Ver logros y estadísticas personales",
-      "url": "/ecosat-monitor/?view=achievements",
+      "url": "./?view=achievements",
       "icons": [
         {
           "src": "assets/icons/shortcut-achievements.svg",
@@ -152,13 +152,13 @@
   "protocol_handlers": [
     {
       "protocol": "web+ecosat",
-      "url": "/ecosat-monitor/?data=%s"
+      "url": "./?data=%s"
     }
   ],
   
   "file_handlers": [
     {
-      "action": "/ecosat-monitor/?import=true",
+      "action": "./?import=true",
       "accept": {
         "application/json": [".json"],
         "text/csv": [".csv"]
@@ -167,7 +167,7 @@
   ],
   
   "share_target": {
-    "action": "/ecosat-monitor/share/",
+    "action": "./share/",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {
