@@ -2,41 +2,34 @@
  * EcoSat Monitor - Service Worker
  * Handles caching, offline functionality, and background sync
  * Author: Elizabeth Díaz Familia
- * Version: 1.0.0
+ * Version: 1.1.0 - Fixed for GitHub Pages
  */
 
-const CACHE_NAME = 'ecosat-monitor-v1.0.0';
-const DATA_CACHE_NAME = 'ecosat-data-v1.0.0';
-const UPDATE_CACHE_NAME = 'ecosat-updates-v1.0.0';
+const CACHE_NAME = 'ecosat-monitor-v1.1.0';
+const DATA_CACHE_NAME = 'ecosat-data-v1.1.0';
+const UPDATE_CACHE_NAME = 'ecosat-updates-v1.1.0';
 
-// Files to cache for offline functionality
+// Files to cache for offline functionality - RUTAS RELATIVAS
 const FILES_TO_CACHE = [
-    '/ecosat-monitor/',
-    '/ecosat-monitor/index.html',
-    '/ecosat-monitor/src/styles.css',
-    '/ecosat-monitor/src/app.js',
-    '/ecosat-monitor/src/data-manager.js',
-    '/ecosat-monitor/src/satellite-service.js',
-    '/ecosat-monitor/src/charts-controller.js',
-    '/ecosat-monitor/src/gamification.js',
-    '/ecosat-monitor/src/offline-storage.js',
-    '/ecosat-monitor/src/translations.js',
-    '/ecosat-monitor/src/utils.js',
-    '/ecosat-monitor/src/manifest.json',
-    
+    './',
+    './index.html',
+    './offline.html',
+    './manifest.json',
+    './src/styles.css',
+    './src/app.js',
+    './src/data-manager.js',
+    './src/satellite-service.js',
+    './src/charts-controller.js',
+    './src/gamification.js',
+    './src/offline-storage.js',
+    './src/translations.js',
+    './src/utils.js',
     
     // External dependencies
     'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js',
     'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
     'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
-    
-    // Fallback pages
-    '/offline.html',
-    
-    // Essential icons
-    '/assets/icons/icon-192x192.png',
-    '/assets/icons/icon-512x512.png'
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'
 ];
 
 // API endpoints to cache
@@ -61,12 +54,6 @@ const CACHE_MAX_AGE = {
     images: 30 * 24 * 60 * 60 * 1000    // 30 days
 };
 
-// Background sync configuration
-const BACKGROUND_SYNC = {
-    tag: 'ecosat-background-sync',
-    maxRetentionTime: 24 * 60 * 60 * 1000 // 24 hours
-};
-
 /**
  * Service Worker Installation
  */
@@ -76,7 +63,11 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             console.log('[ServiceWorker] Pre-caching app shell');
-            return cache.addAll(FILES_TO_CACHE);
+            return cache.addAll(FILES_TO_CACHE).catch(err => {
+                console.error('[ServiceWorker] Failed to cache files:', err);
+                // Continue even if some files fail to cache
+                return Promise.resolve();
+            });
         }).then(() => {
             console.log('[ServiceWorker] Installation successful');
             return self.skipWaiting();
@@ -168,7 +159,7 @@ async function handleAPIRequest(request) {
         
         throw new Error('Network response not ok');
     } catch (error) {
-        console.log('[ServiceWorker] Network failed, trying cache:', error);
+        console.log('[ServiceWorker] Network failed, trying cache');
         
         // Fallback to cache
         const cachedResponse = await caches.match(request);
@@ -200,38 +191,20 @@ async function handleStaticAsset(request) {
     const cachedResponse = await cache.match(request);
     
     if (cachedResponse) {
-        // Check if cache is stale
-        const cacheTime = new Date(cachedResponse.headers.get('sw-cache-time') || 0);
-        const now = new Date();
-        const maxAge = getMaxAge(request.url);
-        
-        if (now - cacheTime < maxAge) {
-            return cachedResponse;
-        }
+        return cachedResponse;
     }
     
     try {
         const networkResponse = await fetch(request);
         if (networkResponse.ok) {
-            // Add cache timestamp
-            const responseClone = networkResponse.clone();
-            const headers = new Headers(responseClone.headers);
-            headers.set('sw-cache-time', new Date().toISOString());
-            
-            const newResponse = new Response(responseClone.body, {
-                status: responseClone.status,
-                statusText: responseClone.statusText,
-                headers: headers
-            });
-            
-            cache.put(request, newResponse.clone());
-            return newResponse;
+            cache.put(request, networkResponse.clone());
+            return networkResponse;
         }
     } catch (error) {
-        console.log('[ServiceWorker] Network failed for static asset:', error);
+        console.log('[ServiceWorker] Network failed for static asset');
     }
     
-    // Return cached version if available
+    // Return cached version if available or 404
     return cachedResponse || new Response('Asset not available offline', { status: 404 });
 }
 
@@ -243,113 +216,16 @@ async function handleNavigationRequest(request) {
         const networkResponse = await fetch(request);
         return networkResponse;
     } catch (error) {
-        console.log('[ServiceWorker] Navigation request failed, serving offline page');
+        console.log('[ServiceWorker] Navigation request failed, serving cached page');
         
         // Try to serve the main page from cache
-        const cachedResponse = await caches.match('/index.html');
-        if (cachedResponse) {
-            return cachedResponse;
-        }
+        const cachedResponse = await caches.match('./index.html') || 
+                              await caches.match('./') ||
+                              await caches.match('./offline.html');
         
-        // Fallback to offline page
-        return caches.match('/offline.html');
+        return cachedResponse || new Response('Offline', { status: 503 });
     }
 }
-
-/**
- * Background Sync Event Handler
- */
-self.addEventListener('sync', (event) => {
-    console.log('[ServiceWorker] Background sync triggered:', event.tag);
-    
-    if (event.tag === BACKGROUND_SYNC.tag) {
-        event.waitUntil(handleBackgroundSync());
-    }
-});
-
-/**
- * Handle background synchronization
- */
-async function handleBackgroundSync() {
-    try {
-        console.log('[ServiceWorker] Performing background sync');
-        
-        // Get pending sync data from IndexedDB
-        const pendingData = await getPendingData();
-        
-        if (pendingData.length > 0) {
-            for (const item of pendingData) {
-                try {
-                    await syncDataItem(item);
-                    await removePendingData(item.id);
-                } catch (error) {
-                    console.error('[ServiceWorker] Failed to sync item:', error);
-                }
-            }
-        }
-        
-        // Update cached data
-        await updateCachedData();
-        
-        console.log('[ServiceWorker] Background sync completed');
-    } catch (error) {
-        console.error('[ServiceWorker] Background sync failed:', error);
-    }
-}
-
-/**
- * Push Event Handler for notifications
- */
-self.addEventListener('push', (event) => {
-    console.log('[ServiceWorker] Push message received');
-    
-    const options = {
-        body: 'Nuevos datos ambientales disponibles',
-        icon: '/assets/icons/icon-192x192.png',
-        badge: '/assets/icons/badge-72x72.png',
-        tag: 'ecosat-notification',
-        data: {
-            url: '/'
-        },
-        actions: [
-            {
-                action: 'view',
-                title: 'Ver datos',
-                icon: '/assets/icons/action-view.png'
-            },
-            {
-                action: 'dismiss',
-                title: 'Descartar',
-                icon: '/assets/icons/action-dismiss.png'
-            }
-        ]
-    };
-    
-    if (event.data) {
-        const data = event.data.json();
-        options.body = data.message || options.body;
-        options.data = { ...options.data, ...data };
-    }
-    
-    event.waitUntil(
-        self.registration.showNotification('EcoSat Monitor', options)
-    );
-});
-
-/**
- * Notification Click Handler
- */
-self.addEventListener('notificationclick', (event) => {
-    console.log('[ServiceWorker] Notification clicked');
-    
-    event.notification.close();
-    
-    if (event.action === 'view' || !event.action) {
-        event.waitUntil(
-            clients.openWindow(event.notification.data.url || '/')
-        );
-    }
-});
 
 /**
  * Message Handler for communication with main thread
@@ -359,14 +235,6 @@ self.addEventListener('message', (event) => {
     
     if (event.data.action === 'skipWaiting') {
         self.skipWaiting();
-    } else if (event.data.action === 'getCacheSize') {
-        getCacheSize().then(size => {
-            event.ports[0].postMessage({ size });
-        });
-    } else if (event.data.action === 'clearCache') {
-        clearDataCache().then(success => {
-            event.ports[0].postMessage({ success });
-        });
     }
 });
 
@@ -382,129 +250,5 @@ function isStaticAsset(url) {
     const staticExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.svg', '.woff', '.woff2'];
     return staticExtensions.some(ext => url.pathname.endsWith(ext));
 }
-
-function getMaxAge(url) {
-    if (url.includes('api')) return CACHE_MAX_AGE.api;
-    if (url.match(/\.(png|jpg|jpeg|svg|ico)$/)) return CACHE_MAX_AGE.images;
-    return CACHE_MAX_AGE.static;
-}
-
-async function getPendingData() {
-    // This would typically read from IndexedDB
-    // Simplified implementation for demo
-    return [];
-}
-
-async function syncDataItem(item) {
-    const response = await fetch(item.url, {
-        method: item.method || 'POST',
-        headers: item.headers || { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item.data)
-    });
-    
-    if (!response.ok) {
-        throw new Error(`Sync failed: ${response.status}`);
-    }
-    
-    return response;
-}
-
-async function removePendingData(id) {
-    // This would typically remove from IndexedDB
-    console.log('[ServiceWorker] Removed pending data:', id);
-}
-
-async function updateCachedData() {
-    try {
-        const cache = await caches.open(DATA_CACHE_NAME);
-        
-        // Update essential API endpoints
-        const essentialEndpoints = [
-            '/api/global-metrics',
-            '/api/cities-data',
-            '/api/chart-data'
-        ];
-        
-        for (const endpoint of essentialEndpoints) {
-            try {
-                const response = await fetch(endpoint);
-                if (response.ok) {
-                    await cache.put(endpoint, response);
-                }
-            } catch (error) {
-                console.log('[ServiceWorker] Failed to update cached endpoint:', endpoint);
-            }
-        }
-    } catch (error) {
-        console.error('[ServiceWorker] Failed to update cached data:', error);
-    }
-}
-
-async function getCacheSize() {
-    try {
-        const cacheNames = await caches.keys();
-        let totalSize = 0;
-        
-        for (const cacheName of cacheNames) {
-            const cache = await caches.open(cacheName);
-            const requests = await cache.keys();
-            
-            for (const request of requests) {
-                const response = await cache.match(request);
-                if (response) {
-                    const blob = await response.blob();
-                    totalSize += blob.size;
-                }
-            }
-        }
-        
-        return totalSize;
-    } catch (error) {
-        console.error('[ServiceWorker] Failed to calculate cache size:', error);
-        return 0;
-    }
-}
-
-async function clearDataCache() {
-    try {
-        const deleted = await caches.delete(DATA_CACHE_NAME);
-        console.log('[ServiceWorker] Data cache cleared:', deleted);
-        return deleted;
-    } catch (error) {
-        console.error('[ServiceWorker] Failed to clear data cache:', error);
-        return false;
-    }
-}
-
-/**
- * Periodic cache cleanup
- */
-function scheduleCleanup() {
-    setInterval(async () => {
-        try {
-            const cache = await caches.open(DATA_CACHE_NAME);
-            const requests = await cache.keys();
-            const now = new Date();
-            
-            for (const request of requests) {
-                const response = await cache.match(request);
-                if (response) {
-                    const cacheTime = new Date(response.headers.get('sw-cache-time') || 0);
-                    const maxAge = getMaxAge(request.url);
-                    
-                    if (now - cacheTime > maxAge) {
-                        await cache.delete(request);
-                        console.log('[ServiceWorker] Cleaned expired cache entry:', request.url);
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('[ServiceWorker] Cache cleanup failed:', error);
-        }
-    }, 60 * 60 * 1000); // Run every hour
-}
-
-// Initialize cleanup scheduler
-scheduleCleanup();
 
 console.log('[ServiceWorker] Service Worker loaded successfully');
