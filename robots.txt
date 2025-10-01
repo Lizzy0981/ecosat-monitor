@@ -1,6 +1,6 @@
 # robots.txt for EcoSat Monitor
 # Author: Elizabeth Díaz Familia
-# https://lizzy0981.github.io/ecosat-monitor/
+# GitHub Pages Deployment
 
 User-agent: *
 Allow: /
@@ -19,7 +19,7 @@ Disallow: /*.css$
 # Allow specific important pages
 Allow: /offline.html
 
-# Sitemap location
+# Sitemap location - GitHub Pages URL
 Sitemap: https://lizzy0981.github.io/ecosat-monitor/sitemap.xml
 
 # Crawl delay (be respectful)
